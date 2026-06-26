@@ -3,8 +3,8 @@ source "googlecompute" "windows-server" {
   disk_size         = 100
   disk_type         = "pd-ssd"
   image_description = "Windows Server instance for use within Instruqt platform"
-  image_name        = "windows-server-{{timestamp}}"
-  image_family      = "windows-server"
+  image_name        = "windows-server-2022-{{timestamp}}"
+  image_family      = "windows-server-2022"
   machine_type      = "n1-standard-2"
   metadata = {
     windows-shutdown-script-ps1 = "C:/cleanup-packer.ps1"
@@ -15,7 +15,7 @@ source "googlecompute" "windows-server" {
   project_id          = "instruqt"
   region              = "europe-west1"
   zone                = "europe-west1-b"
-  source_image_family = "windows-2019"
+  source_image_family = "windows-2022"
   tags                = ["allow-winrm-ingress-to-packer"]
   winrm_insecure      = true
   winrm_use_ssl       = true
@@ -26,10 +26,6 @@ build {
   sources = ["source.googlecompute.windows-server"]
 
   provisioner "file" {
-    destination = "C:/packages.config"
-    source      = "./scripts/packages.config"
-  }
-  provisioner "file" {
     destination = "C:/cleanup-packer.ps1"
     source      = "./scripts/cleanup-packer.ps1"
   }
@@ -38,11 +34,9 @@ build {
     elevated_password = ""
     scripts = [
       "./scripts/disable-uac.ps1",
-      "./scripts/install-chocolatey.ps1",
-      "./scripts/run-chocolatey.ps1",
       "./scripts/miscellaneous.ps1",
       "./scripts/browser-settings.ps1",
-      "./scripts/install-myrtille.ps1",
+      "./scripts/display-settings.ps1",
       "./scripts/install-openssh.ps1",
     ]
     valid_exit_codes = [0, 3010]
